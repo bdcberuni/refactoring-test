@@ -5,8 +5,6 @@
 You are asked to refactor the UserService class and, more specifically, its AddUser method. 
 Assume that the code is sound in terms of business logic and only focuses on applying clean code principles. Keep in mind acronyms such as SOLID, KISS, DRY and YAGNI.
 
-The reason for the refactor is we like to add Push as a notification service.
-
 Try to keep this exercise below 3 hours. If you still have things you can improve after the 3-hour mark, please write them down, and we will take them into account.
 
 ## Limitations
