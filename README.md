@@ -2,7 +2,7 @@
 
 ## Description
 
-You are asked to refactor the SignupService class and, more specifically, its AddUser method. 
+You are asked to refactor the UserService class and, more specifically, its AddUser method. 
 Assume that the code is sound in terms of business logic and only focuses on applying clean code principles. Keep in mind acronyms such as SOLID, KISS, DRY and YAGNI.
 
 The reason for the refactor is we like to add Push as a notification service.
