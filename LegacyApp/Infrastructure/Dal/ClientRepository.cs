@@ -4,11 +4,11 @@ using System.Data.SqlClient;
 
 namespace LegacyApp
 {
-    public class ClientRepository
+    public class ClientRepository : IClientRepository
     {
-        public Client GetById(int id)
+        public Client? GetById(int id)
         {
-            Client client = null;
+            Client? client = null;
             var connectionString = ConfigurationManager.ConnectionStrings["appDatabase"].ConnectionString;
 
             using (var connection = new SqlConnection(connectionString))
@@ -22,17 +22,17 @@ namespace LegacyApp
 
                 var parametr = new SqlParameter("@clientId", SqlDbType.Int) { Value = id };
                 command.Parameters.Add(parametr);
-                
+
                 connection.Open();
+
                 var reader = command.ExecuteReader(CommandBehavior.CloseConnection);
                 while (reader.Read())
                 {
-                    client = new Client
-                    {
-                        Id = int.Parse(reader["ClientId"].ToString()),
-                        Name = reader["Name"].ToString(),
-                        ClientStatus = (ClientStatus) int.Parse(reader["ClientStatus"].ToString())
-                    };
+                    client = Client.Create(
+                        id: int.Parse(reader["ClientId"].ToString()!),
+                        name: reader["Name"].ToString()!);
+
+                    client.ClientStatus = (ClientStatus)int.Parse(reader["ClientStatus"].ToString()!);
                 }
             }
 
