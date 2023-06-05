@@ -31,34 +31,34 @@ namespace LegacyApp
         // todo: legacy cleanup
         public bool AddUser(string firname, string surname, string email, DateTime dateOfBirth, int clientId)
         {
-            return Task.Run(async () => await AddUser(
-                new User
-                {
-                    DateOfBirth = dateOfBirth,
-                    EmailAddress = email,
-                    Firstname = firname,
-                    Surname = surname
-                }, clientId))
-                .GetAwaiter()
-                .GetResult();
+            var user = new User
+            {
+                DateOfBirth = dateOfBirth,
+                EmailAddress = email,
+                Firstname = firname,
+                Surname = surname
+            };
+
+            return ValidateUser(user)
+                && SetCreditLimit(user, clientId, userCreditService.GetCreditLimit(user.Firstname, user.Surname, user.DateOfBirth))
+                && userDal.SaveUser(user);
         }
 
         public async Task<bool> AddUser(User user, int clientId)
         {
             // todo: consider FluentValidation..?
             return ValidateUser(user)
-                && await SetCreditLimit(user, clientId)
+                && SetCreditLimit(user, clientId, await userCreditService.GetCreditLimitAsync(user.Firstname, user.Surname, user.DateOfBirth))
                 && userDal.SaveUser(user);
         }
 
-        protected async Task<bool> SetCreditLimit(User user, int clientId)
+        protected bool SetCreditLimit(User user, int clientId, int creditLimit)
         {
             if (clientDal.GetById(clientId) is not Client client)
             {
                 return false;
             }
 
-            var creditLimit = await userCreditService.GetCreditLimit(user.Firstname, user.Surname, user.DateOfBirth);
             user.SetCreditLimit(creditLimit, client);
 
             if (user.HasCreditLimit && user.CreditLimit < 500)

@@ -27,7 +27,7 @@ public class UserServiceTest
 
         var userCreditServiceClient = new Mock<IUserCreditServiceClient>();
         userCreditServiceClient
-            .Setup(c => c.GetCreditLimit(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>()))
+            .Setup(c => c.GetCreditLimitAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>()))
             .Returns(ValueTask.FromResult(initialLimit));
 
         var userDal = new Mock<IUserRepository>();

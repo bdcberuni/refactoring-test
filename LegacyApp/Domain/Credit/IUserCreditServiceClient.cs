@@ -2,5 +2,6 @@
 
 public interface IUserCreditServiceClient
 {
-    ValueTask<int> GetCreditLimit(string firstname, string surname, DateTime dateOfBirth);
+    int GetCreditLimit(string firstname, string surname, DateTime dateOfBirth);
+    ValueTask<int> GetCreditLimitAsync(string firstname, string surname, DateTime dateOfBirth);
 }

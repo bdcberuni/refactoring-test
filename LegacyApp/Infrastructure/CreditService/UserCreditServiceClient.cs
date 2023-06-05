@@ -36,7 +36,7 @@ namespace LegacyApp
 
     internal class UserCreditServiceClient : IUserCreditServiceClient
     {
-        public async ValueTask<int> GetCreditLimit(string firstname, string surname, DateTime dateOfBirth)
+        public async ValueTask<int> GetCreditLimitAsync(string firstname, string surname, DateTime dateOfBirth)
         {
             GrpcClientFactory.AllowUnencryptedHttp2 = true;
             using var channel = GrpcChannel.ForAddress("http://totally-real-service.com");
@@ -49,6 +49,28 @@ namespace LegacyApp
             });
 
             return response.Result;
+        }
+
+        public int GetCreditLimit(string firstname, string surname, DateTime dateOfBirth)
+        {
+            GrpcClientFactory.AllowUnencryptedHttp2 = true;
+            using var channel = GrpcChannel.ForAddress("http://totally-real-service.com");
+            var userCreditService = channel.CreateGrpcService<IUserCreditService>();
+            var vt = userCreditService.GetCreditLimit(new GetCreditLimitRequest
+            {
+                Firstname = firstname,
+                Surname = surname,
+                DateOfBirth = dateOfBirth
+            });
+
+            if (vt.IsCompletedSuccessfully)
+            {
+                return vt.Result.Result;
+            }
+            else
+            {
+                return vt.GetAwaiter().GetResult().Result;
+            }
         }
     }
 }
